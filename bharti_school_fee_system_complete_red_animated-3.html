@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bharti School Fee System</title>
+<style>
+html,body{overflow-x:hidden}
+
+*{box-sizing:border-box}
+:root{--red:#c9152b;--red2:#8f0e1d;--red3:#ef334f;--soft:#fff1f3;--ink:#24151a;--muted:#75666a;--line:#ead9dc}
+body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#fff5f6,#fff 460px);color:var(--ink)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 10%,#ef334f12,transparent 30%),radial-gradient(circle at 90% 20%,#c9152b10,transparent 28%);z-index:-1}
+.header{background:linear-gradient(135deg,var(--red2),var(--red),#e82d46);color:#fff;text-align:center;padding:28px 12px 20px;box-shadow:0 8px 30px #8f0e1d25;animation:drop .7s ease}
+.header h1{margin:0;font-size:24px;letter-spacing:1.5px;text-shadow:0 2px 10px #0003}.line{width:230px;height:5px;background:#fff;border-radius:20px;margin:14px auto 0;animation:pulse 2s infinite}
+.news{background:linear-gradient(135deg,#721020,#b31329,#df2943);color:#fff;overflow:hidden}.news-title{font-size:25px;font-weight:800;padding:19px 14px;border-bottom:1px solid #fff3}.noticebar{padding:20px 15px;text-align:center;font-size:17px;animation:shine 3s infinite}
+.nav{background:#fff;display:flex;overflow-x:auto;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;z-index:10;box-shadow:0 3px 14px #6d0d1910}
+.nav button{border:0;background:#fff;padding:15px 20px;font-size:16px;cursor:pointer;color:#4d383d;transition:.25s;font-weight:700}.nav button:hover{color:var(--red);transform:translateY(-2px)}.nav button.active{background:var(--red);color:#fff;box-shadow:0 5px 15px #c9152b38}
+.main{max-width:1100px;margin:25px auto;padding:0 12px}.panel{display:none}.panel.active{display:block;animation:fadeUp .35s ease}
+.box{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:18px;box-shadow:0 8px 28px #72102010;overflow:hidden;transition:.25s}.box:hover{transform:translateY(-2px);box-shadow:0 12px 35px #72102018}
+.boxhead{padding:17px 20px;border-bottom:1px solid var(--line);font-size:19px;font-weight:800;color:#471c24;background:linear-gradient(90deg,#fff,#fff7f8)}
+.content{padding:20px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:18px;background:linear-gradient(145deg,#fff,#fff5f6);border:1px solid var(--line);border-radius:13px;animation:pop .5s ease}.stat strong{display:block;font-size:25px;color:var(--red);margin-top:7px}.stat small{color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}label{display:block;font-weight:800;font-size:13px;margin-bottom:6px}
+input,select{width:100%;height:47px;border:1px solid #d9c5c9;border-radius:9px;padding:0 12px;font-size:15px;background:#fff;color:#24151a;outline:none;transition:.2s}input:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 4px #c9152b12}.full{grid-column:1/-1}
+.btn{border:0;background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;padding:12px 19px;border-radius:9px;font-weight:800;font-size:15px;cursor:pointer;transition:.2s;box-shadow:0 5px 14px #c9152b25}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #c9152b35}.btn:active{transform:scale(.97)}.btn.red{background:#7d0b18}.btn.light{background:#fff0f2;color:var(--red);box-shadow:none;border:1px solid #f2c7cd}
+.notice{display:none;margin-top:14px;padding:12px;border-radius:9px;background:#edf9f0;color:#137333;font-weight:800}.notice.show{display:block}
+.list{display:flex;flex-direction:column;gap:10px}.student{display:flex;justify-content:space-between;align-items:center;padding:15px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(90deg,#fff,#fff8f9);animation:fadeUp .3s ease}.student b{font-size:16px}.student small{color:#76676b}.actions{display:flex;gap:6px;flex-wrap:wrap}.mini{border:0;border-radius:7px;padding:8px 10px;font-size:12px;font-weight:800;cursor:pointer;background:#f1e9eb;transition:.2s}.mini:hover{transform:translateY(-1px)}.mini.blue{background:#ffe6ea;color:var(--red)}.mini.red{background:#fce0e4;color:#a30d20}
+table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:11px;border-bottom:1px solid #eee1e4;text-align:left;font-size:13px}th{background:#fff0f2;color:#5e2831;position:sticky;top:0}.table{overflow:auto}.empty{text-align:center;color:#777;padding:25px}.search{width:100%;margin-bottom:13px}
+.badge{display:inline-block;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:900}.paid{background:#e7f8ec;color:#16733a}.due{background:#fff0f0;color:#b0182d}.partial{background:#fff5d9;color:#8a5a00}
+.monthgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.monthcard{border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff}.monthcard h4{margin:0 0 8px}.monthcard .amount{font-size:18px;font-weight:900;color:var(--red)}.monthcard button{margin-top:8px}
+.footer{background:linear-gradient(135deg,#721020,var(--red2),var(--red));color:#fff;text-align:center;padding:24px;margin-top:35px}.footer b{color:#ffd9de}
+.receipt{background:#fff;border:2px dashed #d8a4ab;border-radius:14px;padding:20px;margin-top:15px}.receipt h3{color:var(--red);margin-top:0}
+.modal{display:none;position:fixed;inset:0;background:#26060b88;z-index:100;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modalbox{background:#fff;border-radius:18px;max-width:720px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 25px 70px #0004;animation:pop .25s ease}.modalhead{padding:17px 20px;background:linear-gradient(135deg,var(--red2),var(--red));color:#fff;font-weight:900;display:flex;justify-content:space-between}.close{background:transparent;border:0;color:#fff;font-size:25px;cursor:pointer}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}@keyframes drop{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:none}}@keyframes pulse{50%{transform:scaleX(1.12);opacity:.7}}@keyframes shine{50%{text-shadow:0 0 18px #fff8}}
+@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.monthgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.header h1{font-size:20px}.news-title{font-size:22px}.stats{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.nav button{padding:14px 17px;font-size:15px}.student{align-items:flex-start;gap:10px;flex-direction:column}.monthgrid{grid-template-columns:1fr 1fr}}
+@media print{.nav,.footer,.btn,.actions,.search,.no-print{display:none!important}.box{box-shadow:none}.panel{display:block!important}.main{max-width:none}}
+</style>
+</head>
+
+<body>
+<header class="header">
+  <h1>BHARTI SCHOOL FEE MANAGEMENT</h1>
+  <div class="line"></div>
+</header>
+<section class="news"><div class="news-title">LATEST UPDATE</div><div class="noticebar">Student • Parent • Monthly Fee • Receipt • Reports</div></section>
+<nav class="nav">
+ <button class="active" data-tab="home">🏠 Home</button><button data-tab="students">👨‍🎓 Students</button>
+ <button data-tab="fee">💰 Fee Entry</button><button data-tab="monthly">📅 Monthly Tracking</button>
+ <button data-tab="records">🧾 Records</button><button data-tab="reports">📊 Reports</button>
+</nav>
+
+<main class="main">
+<section id="home" class="panel active">
+ <div class="box"><div class="boxhead">Dashboard</div><div class="content"><div class="stats">
+  <div class="stat">Total Students<strong id="countStudents">0</strong><small>Registered students</small></div>
+  <div class="stat">Fee Entries<strong id="countRecords">0</strong><small>Total payments</small></div>
+  <div class="stat">Total Collected<strong id="totalFee">₹0</strong><small>All recorded payments</small></div>
+  <div class="stat">This Month<strong id="monthFee">₹0</strong><small>Current-month collection</small></div>
+ </div></div></div>
+ <div class="box"><div class="boxhead">Quick Actions</div><div class="content">
+  <button class="btn" onclick="go('students')">+ Add Student</button>
+  <button class="btn" onclick="go('fee')">+ Add Fee</button>
+  <button class="btn light" onclick="go('monthly')">📅 Check Monthly Due</button>
+  <button class="btn light" onclick="go('reports')">📊 View Reports</button>
+ </div></div>
+ <div class="box"><div class="boxhead">System Improvements</div><div class="content">
+  <div style="line-height:1.9">🔐 Local data protection • 🆔 Admission number • 📱 Parent mobile • 👨‍👩‍👦 Parent details • 📅 Monthly fee tracking • 🟢 Paid / 🟡 Partial / 🔴 Due • 🧾 Receipt • 🖨️ Print • 📥 CSV backup • 📊 Reports</div>
+ </div></div>
+</section>
+
+<section id="students" class="panel">
+ <div class="box"><div class="boxhead">Complete Student Registration</div><div class="content">
+  <div class="formgrid">
+   <div><label>Student Name *</label><input id="sname" placeholder="Enter student name"></div>
+   <div><label>Admission Number *</label><input id="admission" placeholder="e.g. 1169"></div>
+   <div><label>Class / Section *</label><input id="sclass" placeholder="Example: 7-A"></div>
+   <div><label>Student Mobile</label><input id="smobile" type="tel" placeholder="10-digit mobile number"></div>
+   <div><label>Parent / Guardian Name *</label><input id="parent" placeholder="Parent name"></div>
+   <div><label>Parent Mobile *</label><input id="pmobile" type="tel" placeholder="10-digit parent mobile"></div>
+   <div><label>Monthly Fee (₹) *</label><input id="monthlyFee" type="number" min="0" placeholder="e.g. 1500"></div>
+   <div><label>Address</label><input id="address" placeholder="Student address"></div>
+   <div class="full"><button class="btn" onclick="addStudent()">Add Student</button></div>
+  </div><div id="studentMsg" class="notice"></div>
+ </div></div>
+ <div class="box"><div class="boxhead">Student List</div><div class="content">
+  <input class="search" id="studentSearch" placeholder="Search name, admission no., parent or mobile..."><div id="studentList" class="list"></div>
+ </div></div>
+</section>
+
+<section id="fee" class="panel">
+ <div class="box"><div class="boxhead">Fee Payment Entry</div><div class="content">
+  <div class="formgrid">
+   <div><label>Student</label><select id="studentSelect"><option value="">Select Student</option></select></div>
+   <div><label>Fee Month</label><select id="feeMonth"></select></div>
+   <div><label>Fee Amount (₹)</label><input id="amount" type="number" min="0" placeholder="Enter paid amount"></div>
+   <div><label>Payment Date</label><input id="paymentDate" type="date"></div>
+   <div><label>From Date</label><input id="from" type="date"></div><div><label>To Date</label><input id="to" type="date"></div>
+   <div class="full"><label>Remark</label><input id="remark" placeholder="Monthly fee / Tuition fee / Other"></div>
+   <div class="full"><button class="btn" onclick="saveFee()">Save Payment & Create Receipt</button></div>
+  </div><div id="feeMsg" class="notice"></div><div id="lastReceipt"></div>
+ </div></div>
+</section>
+
+<section id="monthly" class="panel">
+ <div class="box"><div class="boxhead">Parent & Monthly Fee Tracking</div><div class="content">
+  <input class="search" id="monthlySearch" placeholder="Search student, parent or admission number...">
+  <div class="table"><table><thead><tr><th>Student</th><th>Admission</th><th>Parent</th><th>Parent Mobile</th><th>Monthly Fee</th><th>Current Month</th><th>Status</th><th>Action</th></tr></thead><tbody id="monthlyBody"></tbody></table></div>
+ </div></div>
+ <div class="box"><div class="boxhead">Selected Student — 12 Month Overview</div><div class="content" id="monthOverview"><div class="empty">Select a student from the table.</div></div></div>
+</section>
+
+<section id="records" class="panel">
+ <div class="box"><div class="boxhead">All Fee Records</div><div class="content">
+  <input class="search" id="recordSearch" placeholder="Search student, parent, admission, month or remark...">
+  <div class="table"><table><thead><tr><th>Student</th><th>Admission</th><th>Month</th><th>Paid</th><th>Payment Date</th><th>Remark</th><th>Status</th><th>Action</th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+ </div></div>
+ <div class="box"><div class="boxhead">Backup & Safety</div><div class="content">
+  <button class="btn" onclick="backup()">⬇️ Download HTML Report</button>
+  <button class="btn light" onclick="downloadCSV()">⬇️ Export CSV</button>
+  <button class="btn light" onclick="window.print()">🖨️ Print</button>
+  <button class="btn red" onclick="clearAll()">Delete All Data</button>
+ </div></div>
+</section>
+
+<section id="reports" class="panel">
+ <div class="box"><div class="boxhead">Fee Reports</div><div class="content">
+  <div class="stats">
+   <div class="stat">Total Due<strong id="totalDue">₹0</strong></div><div class="stat">Paid Students<strong id="paidStudents">0</strong></div>
+   <div class="stat">Partial<strong id="partialStudents">0</strong></div><div class="stat">Due Students<strong id="dueStudents">0</strong></div>
+  </div>
+  <div id="reportText" style="margin-top:18px;line-height:1.9"></div>
+ </div></div>
+</section>
+</main>
+
+<div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><span id="modalTitle">Student</span><button class="close" onclick="closeModal()">×</button></div><div id="modalBody" class="content"></div></div></div>
+<footer class="footer"><div>Bharti School Fee Management System</div><div style="margin-top:7px">Created by <b>Bharti Education Hub</b></div></footer>
+
+<script>
+const SK="bharti_students_v3",RK="bharti_records_v3";
+let students=JSON.parse(localStorage.getItem(SK)||"[]");
+let records=JSON.parse(localStorage.getItem(RK)||"[]");
+const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function save(){localStorage.setItem(SK,JSON.stringify(students));localStorage.setItem(RK,JSON.stringify(records))}
+function money(n){return "₹"+Number(n||0).toLocaleString("en-IN")}
+function today(){return new Date().toISOString().slice(0,10)}
+function currentMonth(){return months[new Date().getMonth()]}
+function msg(id,text,ok=true){let e=document.getElementById(id);e.textContent=text;e.className="notice show";e.style.background=ok?"#edf9f0":"#fdecea";e.style.color=ok?"#137333":"#b42318";setTimeout(()=>e.className="notice",3200)}
+function go(tab){document.querySelector(`[data-tab="${tab}"]`).click()}
+
+function normalizeStudent(s){
+  return {...s,admission:s.admission||s.admissionNo||"",smobile:s.smobile||s.mobile||"",parent:s.parent||s.parentName||"",pmobile:s.pmobile||s.parentMobile||"",monthlyFee:Number(s.monthlyFee||0),address:s.address||""}
+}
+students=students.map(normalizeStudent);
+
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active");render();
+});
+
+function addStudent(){
+ let name=document.getElementById("sname").value.trim(), admission=document.getElementById("admission").value.trim();
+ let cls=document.getElementById("sclass").value.trim(),smobile=document.getElementById("smobile").value.trim();
+ let parent=document.getElementById("parent").value.trim(),pmobile=document.getElementById("pmobile").value.trim();
+ let monthlyFee=Number(document.getElementById("monthlyFee").value),address=document.getElementById("address").value.trim();
+ if(!name||!admission||!cls||!parent||!pmobile||!(monthlyFee>0)){msg("studentMsg","Please fill all required fields.",false);return}
+ if(!/^\d{10}$/.test(pmobile)){msg("studentMsg","Parent mobile must be 10 digits.",false);return}
+ if(smobile&&!/^\d{10}$/.test(smobile)){msg("studentMsg","Student mobile must be 10 digits.",false);return}
+ if(students.some(s=>s.admission.toLowerCase()===admission.toLowerCase())){msg("studentMsg","This admission number already exists.",false);return}
+ let id=Date.now().toString(36)+Math.random().toString(36).slice(2);
+ students.push({id,name,admission,cls,smobile,parent,pmobile,monthlyFee,address});save();clearStudentForm();render();msg("studentMsg","Student added successfully.");
+}
+function clearStudentForm(){["sname","admission","sclass","smobile","parent","pmobile","monthlyFee","address"].forEach(id=>document.getElementById(id).value="")}
+
+function saveFee(){
+ let sid=document.getElementById("studentSelect").value, amount=Number(document.getElementById("amount").value);
+ let month=document.getElementById("feeMonth").value,paymentDate=document.getElementById("paymentDate").value;
+ let from=document.getElementById("from").value,to=document.getElementById("to").value,remark=document.getElementById("remark").value.trim();
+ if(!sid||!month||!(amount>0)||!paymentDate){msg("feeMsg","Select student, month, amount and payment date.",false);return}
+ let s=students.find(x=>x.id===sid);if(!s)return;
+ let existing=records.filter(r=>r.sid===sid&&r.month===month).reduce((a,r)=>a+Number(r.amount||0),0);
+ let target=Number(s.monthlyFee||0);
+ if(existing+amount>target){msg("feeMsg",`Payment exceeds monthly fee. Remaining: ${money(Math.max(0,target-existing))}`,false);return}
+ records.push({id:Date.now().toString(36),sid,amount,month,paymentDate,from:from||paymentDate,to:to||paymentDate,remark});save();render();
+ document.getElementById("amount").value="";document.getElementById("remark").value="";
+ msg("feeMsg","Payment saved successfully.");
+ showReceipt(records[records.length-1]);
+}
+
+function monthPaid(sid,month){return records.filter(r=>r.sid===sid&&r.month===month).reduce((a,r)=>a+Number(r.amount||0),0)}
+function statusFor(s,month){let paid=monthPaid(s.id,month),fee=Number(s.monthlyFee||0);return paid>=fee?"Paid":paid>0?"Partial":"Due"}
+function badge(st){return `<span class="badge ${st==="Paid"?"paid":st==="Partial"?"partial":"due"}">${st}</span>`}
+
+function render(){
+ document.getElementById("countStudents").textContent=students.length;
+ document.getElementById("countRecords").textContent=records.length;
+ document.getElementById("totalFee").textContent=money(records.reduce((a,r)=>a+Number(r.amount||0),0));
+ document.getElementById("monthFee").textContent=money(records.filter(r=>r.month===currentMonth()).reduce((a,r)=>a+Number(r.amount||0),0));
+ let sel=document.getElementById("studentSelect"),old=sel.value;
+ sel.innerHTML='<option value="">Select Student</option>'+students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} - ${esc(s.admission)}</option>`).join("");
+ if(students.some(s=>s.id===old))sel.value=old;
+ document.getElementById("feeMonth").innerHTML=months.map(m=>`<option>${m}</option>`).join("");document.getElementById("feeMonth").value=currentMonth();
+ document.getElementById("paymentDate").value ||= today();document.getElementById("from").value ||= today();document.getElementById("to").value ||= today();
+
+ let q=(document.getElementById("studentSearch")?.value||"").toLowerCase();
+ let ss=students.filter(s=>(s.name+" "+s.cls+" "+s.admission+" "+s.parent+" "+s.pmobile).toLowerCase().includes(q));
+ document.getElementById("studentList").innerHTML=ss.length?ss.map(s=>`
+ <div class="student"><div><b>${esc(s.name)}</b><br><small>Admission: ${esc(s.admission)} • Class: ${esc(s.cls)}<br>Parent: ${esc(s.parent)} • ${esc(s.pmobile)}<br>Monthly Fee: ${money(s.monthlyFee)}</small></div>
+ <div class="actions"><button class="mini blue" onclick="feeFor('${s.id}')">Fee</button><button class="mini" onclick="viewStudent('${s.id}')">View</button><button class="mini" onclick="editStudent('${s.id}')">Edit</button><button class="mini red" onclick="deleteStudent('${s.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No students found.</div>';
+
+ let rq=(document.getElementById("recordSearch")?.value||"").toLowerCase();
+ let rr=records.slice().reverse().filter(r=>{let s=students.find(x=>x.id===r.sid);return s&&(s.name+" "+s.admission+" "+s.parent+" "+r.month+" "+r.remark).toLowerCase().includes(rq)});
+ document.getElementById("recordsBody").innerHTML=rr.length?rr.map(r=>{let s=students.find(x=>x.id===r.sid);let st=statusFor(s,r.month);return `<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.admission)}</td><td>${r.month}</td><td><b>${money(r.amount)}</b></td><td>${r.paymentDate||r.from}</td><td>${esc(r.remark||"-")}</td><td>${badge(st)}</td><td><button class="mini" onclick="showReceiptById('${r.id}')">Receipt</button> <button class="mini red" onclick="deleteRecord('${r.id}')">Delete</button></td></tr>`}).join(""):'<tr><td colspan="8" class="empty">No fee records yet.</td></tr>';
+
+ let mq=(document.getElementById("monthlySearch")?.value||"").toLowerCase(), m=students.filter(s=>(s.name+" "+s.parent+" "+s.admission+" "+s.pmobile).toLowerCase().includes(mq));
+ let cm=currentMonth();
+ document.getElementById("monthlyBody").innerHTML=m.length?m.map(s=>{let st=statusFor(s,cm),paid=monthPaid(s.id,cm);return `<tr><td><b>${esc(s.name)}</b><br><small>${esc(s.cls)}</small></td><td>${esc(s.admission)}</td><td>${esc(s.parent)}</td><td>${esc(s.pmobile)}</td><td>${money(s.monthlyFee)}</td><td>${money(paid)}</td><td>${badge(st)}</td><td><button class="mini blue" onclick="showMonths('${s.id}')">12 Months</button></td></tr>`}).join(""):'<tr><td colspan="8" class="empty">No students found.</td></tr>';
+
+ let totalDue=0,paidStudents=0,partial=0,due=0;
+ students.forEach(s=>{let st=statusFor(s,cm),p=monthPaid(s.id,cm),d=Math.max(0,s.monthlyFee-p);totalDue+=d;if(st==="Paid")paidStudents++;else if(st==="Partial")partial++;else due++});
+ document.getElementById("totalDue").textContent=money(totalDue);document.getElementById("paidStudents").textContent=paidStudents;document.getElementById("partialStudents").textContent=partial;document.getElementById("dueStudents").textContent=due;
+ document.getElementById("reportText").innerHTML=`Current month: <b>${cm}</b><br>Total expected this month: <b>${money(students.reduce((a,s)=>a+Number(s.monthlyFee||0),0))}</b><br>Total collected this month: <b>${money(records.filter(r=>r.month===cm).reduce((a,r)=>a+Number(r.amount||0),0))}</b><br>Total outstanding this month: <b>${money(totalDue)}</b>`;
+}
+
+function feeFor(id){go("fee");document.getElementById("studentSelect").value=id}
+function editStudent(id){
+ let s=students.find(x=>x.id===id);if(!s)return;
+ let n=prompt("Student name:",s.name);if(n===null)return;n=n.trim();if(!n)return;
+ let ad=prompt("Admission number:",s.admission);if(ad===null)return;
+ let c=prompt("Class / Section:",s.cls);if(c===null)return;
+ let p=prompt("Parent / Guardian name:",s.parent);if(p===null)return;
+ let pm=prompt("Parent mobile:",s.pmobile);if(pm===null)return;
+ let mf=prompt("Monthly fee:",s.monthlyFee);if(mf===null)return;
+ s.name=n;s.admission=ad.trim();s.cls=c.trim();s.parent=p.trim();s.pmobile=pm.trim();s.monthlyFee=Number(mf)||0;save();render();
+}
+function deleteStudent(id){if(!confirm("Delete this student and all their fee records?"))return;students=students.filter(s=>s.id!==id);records=records.filter(r=>r.sid!==id);save();render()}
+function deleteRecord(id){if(!confirm("Delete this fee record?"))return;records=records.filter(r=>r.id!==id);save();render()}
+
+function viewStudent(id){
+ let s=students.find(x=>x.id===id);if(!s)return;document.getElementById("modalTitle").textContent=s.name;
+ document.getElementById("modalBody").innerHTML=`<b>Admission:</b> ${esc(s.admission)}<br><b>Class:</b> ${esc(s.cls)}<br><b>Student Mobile:</b> ${esc(s.smobile||"-")}<br><b>Parent:</b> ${esc(s.parent)}<br><b>Parent Mobile:</b> ${esc(s.pmobile)}<br><b>Monthly Fee:</b> ${money(s.monthlyFee)}<br><b>Address:</b> ${esc(s.address||"-")}<hr><button class="btn" onclick="showMonths('${s.id}');closeModal()">12 Month Tracking</button>`;
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function showMonths(id){
+ let s=students.find(x=>x.id===id);if(!s)return;let paidTotal=0;
+ let cards=months.map(m=>{let p=monthPaid(s.id,m),st=statusFor(s,m);paidTotal+=p;return `<div class="monthcard"><h4>${m}</h4><div>Fee: ${money(s.monthlyFee)}</div><div class="amount">Paid: ${money(p)}</div><div>${badge(st)}</div></div>`}).join("");
+ document.getElementById("monthOverview").innerHTML=`<div style="margin-bottom:14px"><b>${esc(s.name)}</b> • Admission ${esc(s.admission)} • Parent ${esc(s.parent)} • ${esc(s.pmobile)}</div><div class="monthgrid">${cards}</div>`;
+ document.getElementById("monthly").scrollIntoView({behavior:"smooth"});
+}
+
+function showReceiptById(id){let r=records.find(x=>x.id===id);if(r)showReceipt(r)}
+function showReceipt(r){
+ let s=students.find(x=>x.id===r.sid);if(!s)return;
+ document.getElementById("lastReceipt").innerHTML=`<div class="receipt" id="receipt"><h3>BHARTI EDUCATION HUB — FEE RECEIPT</h3><b>Receipt ID:</b> ${esc(r.id)}<br><b>Student:</b> ${esc(s.name)}<br><b>Admission:</b> ${esc(s.admission)}<br><b>Class:</b> ${esc(s.cls)}<br><b>Parent:</b> ${esc(s.parent)}<br><b>Parent Mobile:</b> ${esc(s.pmobile)}<br><b>Fee Month:</b> ${esc(r.month)}<br><b>Amount Paid:</b> ${money(r.amount)}<br><b>Payment Date:</b> ${esc(r.paymentDate||"")}<br><b>Status:</b> ${badge(statusFor(s,r.month))}<br><br><button class="btn no-print" onclick="printReceipt()">🖨️ Print Receipt</button></div>`;
+ document.getElementById("lastReceipt").scrollIntoView({behavior:"smooth"});
+}
+function printReceipt(){let el=document.getElementById("receipt");if(!el)return;let w=window.open("","_blank");w.document.write(`<html><head><title>Fee Receipt</title><style>
+html,body{overflow-x:hidden}
+body{font-family:Arial;padding:25px;color:#222}h3{color:#c9152b}.receipt{border:2px solid #c9152b;padding:25px;max-width:650px;margin:auto}.no-print{display:none}</style></head><body>${el.outerHTML}</body>
+</html>`);w.document.close();w.print()}
+function backup(){
+ const rows=records.slice().reverse().map(r=>{const s=students.find(x=>x.id===r.sid);if(!s)return "";return '<tr><td>'+esc(s.name)+'</td><td>'+esc(s.admission)+'</td><td>'+esc(s.cls)+'</td><td>'+esc(s.parent)+'</td><td>'+esc(s.pmobile)+'</td><td>'+esc(r.month)+'</td><td>'+money(r.amount)+'</td><td>'+esc(r.paymentDate||"")+'</td><td>'+esc(r.remark||"-")+'</td></tr>'}).join("");
+ const total=records.reduce((a,r)=>a+Number(r.amount||0),0);
+ const report='<!doctype html><html><head><meta charset="utf-8"><title>Bharti Education Hub Fee Report</title><style>body{font-family:Arial;background:#fff5f6;padding:20px;color:#26151a}.head{background:#c9152b;color:#fff;padding:22px;border-radius:14px}table{width:100%;border-collapse:collapse;background:#fff;margin-top:15px}th,td{padding:10px;border-bottom:1px solid #eddfe2;text-align:left;font-size:12px}th{background:#ffe9ec}</style></head><body><div class="head"><h1>BHARTI EDUCATION HUB</h1><div>Student Fee Payment Report</div></div><p>Total Students: <b>'+students.length+'</b> | Fee Entries: <b>'+records.length+'</b> | Total Collected: <b>'+money(total)+'</b></p><table><thead><tr><th>Student</th><th>Admission</th><th>Class</th><th>Parent</th><th>Parent Mobile</th><th>Month</th><th>Amount</th><th>Payment Date</th><th>Remark</th></tr></thead><tbody>'+(rows||'<tr><td colspan="9">No fee records</td></tr>')+'</tbody></table><p>Created by Bharti Education Hub • '+new Date().toLocaleString("en-IN")+'</p></body></html>';
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([report],{type:"text/html"}));a.download="Bharti-Fee-Report.html";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+function downloadCSV(){
+ let rows=[["Student","Admission","Class","Parent","Parent Mobile","Month","Amount","Payment Date","Remark"]];
+ records.forEach(r=>{let s=students.find(x=>x.id===r.sid);if(s)rows.push([s.name,s.admission,s.cls,s.parent,s.pmobile,r.month,r.amount,r.paymentDate,r.remark||""])});
+ let csv=rows.map(row=>row.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+ let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="Bharti-Fee-Records.csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+function clearAll(){if(confirm("Delete ALL students and fee records? This cannot be undone unless you have a backup.")){students=[];records=[];save();render()}}
+document.getElementById("studentSearch").oninput=render;
+document.getElementById("recordSearch").oninput=render;
+document.getElementById("monthlySearch").oninput=render;
+document.getElementById("paymentDate").value=today();
+document.getElementById("from").value=today();
+document.getElementById("to").value=today();
+render();
+</script>
+</body>
+</html>
